@@ -6,6 +6,6 @@ namespace echo_mate_backend.Models.Responses
         [property: JsonPropertyName("summary")]
         string OutputText,
         [property: JsonPropertyName("files")]
-        List<string> ImageUrls
+        List<string> Files
     );
 }

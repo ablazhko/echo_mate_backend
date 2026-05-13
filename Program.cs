@@ -4,8 +4,10 @@ using echo_mate_backend.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var _allowedOrigins = builder.Configuration.GetSection("AllowedOrigins").Get<string[]>() ?? [];
+
 // CORS policy for allowing requests from React development server
-var corsPolicyName = "AllowReactDev";
+var corsPolicyName = "_allowedOrigins";
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(corsPolicyName, policy =>
@@ -38,7 +40,6 @@ var app = builder.Build();
 
 app.UseRouting();
 
-app.UseCors("AllowReactDev");
 
 app.UseStaticFiles();
 
@@ -49,9 +50,11 @@ app.UseStaticFiles();
     app.UseSwaggerUI();
 //}
 
-//app.UseHttpsRedirection();
+app.UseHttpsRedirection();
 
-//app.UseAuthorization();
+app.UseCors(corsPolicyName);
+
+app.UseAuthorization();
 
 app.MapControllers();
 
