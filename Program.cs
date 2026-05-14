@@ -4,16 +4,16 @@ using echo_mate_backend.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var _allowedOrigins = builder.Configuration.GetSection("AllowedOrigins").Get<string[]>() ?? [];
 
 // CORS policy for allowing requests from React development server
 var corsPolicyName = "_allowedOrigins";
+var _allowedOrigins = builder.Configuration.GetSection("AllowedOrigins").Get<string[]>() ?? [];
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(corsPolicyName, policy =>
     {
         policy
-            .WithOrigins("http://localhost:5173")
+            .WithOrigins(_allowedOrigins)
             .AllowAnyHeader()
             .AllowAnyMethod();
     });
@@ -28,9 +28,10 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHttpContextAccessor();
 
+var engineBaseUrl = builder.Configuration["EngineApi:BaseUrl"];
 builder.Services.AddHttpClient<EchoMateEngineHttpClient>(client => 
 {
-    client.BaseAddress = new Uri("http://localhost:8002");
+    client.BaseAddress = new Uri(engineBaseUrl);
     
 });
 
